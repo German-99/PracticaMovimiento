@@ -96,5 +96,8 @@
   <ItemGroup>
     <Resource Include="scarface.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="auto.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
