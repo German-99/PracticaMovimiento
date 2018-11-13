@@ -24,64 +24,153 @@ namespace PracticaMovimiento
     {
         Stopwatch stopwatch;
         TimeSpan tiempoAnterior;
+
+        enum EstadoJuego { Gameplay, Gameover };
+        EstadoJuego estadoActual = EstadoJuego.Gameplay;
+
         public MainWindow()
         {
+
             InitializeComponent();
             miCanvas.Focus();
 
             stopwatch = new Stopwatch();
             stopwatch.Start();
             tiempoAnterior = stopwatch.Elapsed;
-            //1.- Establecer instrucciones
-            ThreadStart threadStart = new ThreadStart(moverEnemigos);
-            //2.- Inicializar el Thread
-            Thread threadMoverEnemigos = new Thread(threadStart);
-            //3.- Ejecutar el thread
-            threadMoverEnemigos.Start();
-            void moverEnemigos()
-            {
-                while (true)
-                {
-                    Dispatcher.Invoke(
-                        () =>
-                        {
-                            var tiempoActual = stopwatch.Elapsed;
-                            var deltaTime = tiempoActual - tiempoAnterior;
 
-                            double leftAutoActual = Canvas.GetLeft(imgAuto);
-                            Canvas.SetLeft(imgAuto, leftAutoActual - (90 * deltaTime.TotalSeconds));
-                            if(Canvas.GetLeft(imgAuto) <= -100)
-                            {
-                                Canvas.SetLeft(imgAuto, 800);
-                            }
-                            tiempoAnterior = tiempoActual;
-                        }
-                        );
-                }
-                }
+            //1.- Establecer instrucciones
+            ThreadStart threadStart =
+                new ThreadStart(actualizar);
+            //2.- Inicializar el Thread
+            Thread threadMoverEnemigos =
+                new Thread(threadStart);
+            //3.- Ejecutar el Thread
+            threadMoverEnemigos.Start();
+
+            /*imgRana.RenderTransform =
+                new RotateTransform(90);*/
+
         }
 
+        void actualizar()
+        {
+            while (true)
+            {
+                Dispatcher.Invoke(
+                () =>
+                {
+                    var tiempoActual = stopwatch.Elapsed;
+                    var deltaTime =
+                        tiempoActual - tiempoAnterior;
+
+                    if (estadoActual == EstadoJuego.Gameplay)
+                    {
+                        double leftCarroActual =
+                        Canvas.GetLeft(imgAuto);
+                        Canvas.SetLeft(
+                            imgAuto, leftCarroActual - (20 * deltaTime.TotalSeconds));
+                        if (Canvas.GetLeft(imgAuto) <= -100)
+                        {
+                            Canvas.SetLeft(imgAuto, 800);
+                        }
+
+
+                        //Intersección en X
+                        double xCarro =
+                            Canvas.GetLeft(imgAuto);
+                        double xRana =
+                            Canvas.GetLeft(imgScarface);
+                        if (xRana + imgScarface.Width >= xCarro &&
+                            xRana <= xCarro + imgAuto.Width)
+                        {
+                            lblInterseccionX.Text =
+                            "SI HAY INTERSECCION EN X!!!";
+                        }
+                        else
+                        {
+                            lblInterseccionX.Text =
+                            "No hay interseccion en X";
+                        }
+                        double yCarro =
+                            Canvas.GetTop(imgAuto);
+                        double yRana =
+                            Canvas.GetTop(imgScarface);
+                        if (yRana + imgScarface.Height >= yCarro &&
+                            yRana <= yCarro + imgAuto.Height)
+                        {
+                            lblInterseccionY.Text =
+                                "SI HAY INTERSECCION EN Y!!!";
+                        }
+                        else
+                        {
+                            lblInterseccionY.Text =
+                                "No hay interseccion en Y";
+                        }
+
+                        if (xRana + imgScarface.Width >= xCarro &&
+                            xRana <= xCarro + imgAuto.Width &&
+                            yRana + imgScarface.Height >= yCarro &&
+                            yRana <= yCarro + imgAuto.Height)
+                        {
+                            lblColision.Text =
+                                "HAY COLISION!!!";
+                            estadoActual = EstadoJuego.Gameover;
+                            miCanvas.Visibility = Visibility.Collapsed;
+                            canvasGameOver.Visibility =
+                                Visibility.Visible;
+                        }
+                        else
+                        {
+                            lblColision.Text =
+                                "No hay colision";
+                        }
+                    }
+                    else if (estadoActual == EstadoJuego.Gameover)
+                    {
+
+                    }
+
+
+
+
+
+
+                    tiempoAnterior = tiempoActual;
+
+
+                }
+                );
+            }
+
+        }
         private void miCanvas_KeyDown(object sender, KeyEventArgs e)
         {
-           if (e.Key == Key.Up)
+            if (estadoActual == EstadoJuego.Gameplay)
             {
-                double topScarfaceActual = Canvas.GetTop(imgScarface);
-                Canvas.SetTop(imgScarface, topScarfaceActual - 15);
-            }
-            if (e.Key == Key.Down)
-            {
-                double downScarfaceActual = Canvas.GetBottom(imgScarface);
-                Canvas.SetBottom(imgScarface, downScarfaceActual + 15);
-            }
-            if (e.Key == Key.Right)
-            {
-                double rightScarfaceActual = Canvas.GetRight(imgScarface);
-                Canvas.SetRight(imgScarface, rightScarfaceActual - 15);
-            }
-            if (e.Key == Key.Right)
-            {
-                double leftScarfaceActual = Canvas.GetLeft(imgScarface);
-                Canvas.SetLeft(imgScarface, leftScarfaceActual + 15);
+                if (e.Key == Key.Up)
+                {
+                    double topRanaActual =
+                        Canvas.GetTop(imgScarface);
+                    Canvas.SetTop(imgScarface, topRanaActual - 15);
+                }
+                if (e.Key == Key.Down)
+                {
+                    double topRanaActual =
+                        Canvas.GetTop(imgScarface);
+                    Canvas.SetTop(imgScarface, topRanaActual + 15);
+                }
+                if (e.Key == Key.Left)
+                {
+                    double leftRanaActual =
+                        Canvas.GetLeft(imgScarface);
+                    Canvas.SetLeft(imgScarface, leftRanaActual - 15);
+                }
+                if (e.Key == Key.Right)
+                {
+                    double leftRanaActual =
+                        Canvas.GetLeft(imgScarface);
+                    Canvas.SetLeft(imgScarface, leftRanaActual + 15);
+                }
             }
         }
     }

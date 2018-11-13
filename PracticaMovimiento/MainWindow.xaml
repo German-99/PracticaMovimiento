@@ -6,8 +6,16 @@
         xmlns:local="clr-namespace:PracticaMovimiento"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Canvas Name="miCanvas" KeyDown="miCanvas_KeyDown" Focusable="True">
+    <Canvas>
+        <Canvas Name="miCanvas" KeyDown="miCanvas_KeyDown" Focusable="True">
         <Image Name="imgScarface" Source="scarface.jpg" Height="144" Canvas.Left="292" Width="234" Canvas.Top="265"></Image>
         <Image Name="imgAuto" Source="auto.png" Height="144" Canvas.Left="536" Canvas.Top="65"></Image>
+        <TextBlock x:Name="lblInterseccionX" Canvas.Left="10" TextWrapping="Wrap" Text="No hay intersección en X" Canvas.Top="10"/>
+        <TextBlock x:Name="lblColision" Canvas.Left="10" TextWrapping="Wrap" Text="No hay colisión" Canvas.Top="52"/>
+        <TextBlock x:Name="lblInterseccionY" Canvas.Left="10" TextWrapping="Wrap" Text="No hay intersección en Y" Canvas.Top="31"/>
+    </Canvas>
+        <Canvas Name="canvasGameOver" Visibility="Collapsed">
+            <TextBlock Text="Game Over" Canvas.Left="230" Canvas.Top="154" FontSize="72" Foreground="#FFBF3B3B" />
+        </Canvas>
     </Canvas>
 </Window>
